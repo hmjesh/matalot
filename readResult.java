@@ -19,8 +19,10 @@ public class readResult {
 			if (ch == 10) {
 				rows++;
 				text += "%";
-			} else
-				text += (char) ch + "";
+			}else
+				if(ch != 13)			
+					text += (char) ch + "";
+
 		}
 		fi.close();
 		if(rows==0){//error, not enough rows
@@ -28,7 +30,7 @@ public class readResult {
 			a[0][0] = "wrong file";
 			return a;
 		}
-			//converting into String[][]
+		//converting into String[][]
 		String[][] csv = new String[rows][46];
 		int lastcell = 0, nextrow = 0;
 		for (int i = 0; i < rows; i++) {//every row
@@ -60,7 +62,7 @@ public class readResult {
 			}
 			lastcell = nextrow;
 		}
-		for(int i=9;i<46;i+=4)
+		for(int i=9;i<45;i+=4)
 		{
 			if(csv[csv.length-1][i+1]==null)
 			{
@@ -73,8 +75,8 @@ public class readResult {
 	}
 	private static void print(String[][] csv, int rows)
 	{
-		 for (int k = 0; k < rows; k++) { for (int l = 0; l < 46; l++)
-		 System.out.print(csv[k][l] + " " + l + ","); System.out.println(); }
-		 System.out.println();
+		for (int k = 0; k < rows; k++) { for (int l = 0; l < 46; l++)
+			System.out.print(csv[k][l] + " " + l + ","); System.out.println(); }
+		System.out.println();
 	}
 }
