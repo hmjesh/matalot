@@ -70,8 +70,6 @@ public class wpoint {//point of wifi
 		lat=la/m;
 		lon=lo/m;
 		alt=al/m;
-		
-
 	}
 	public wpoint(wpoint p1,wpoint p2,wpoint p3)
 	{
