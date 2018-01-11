@@ -1,226 +1,240 @@
-package Shana_B;
+package ShanaB;
 
-import java.sql.Date;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
-public class wpoint {//point of wifi
-	private Date tim;
-	private String id;
-	private double lat;
-	private double lon;
-	private double alt;
-	private String ssid;
-	private String mac;
-	private int frequncy;
-	private int signal;
-	
-	public  wpoint()
-	{
-	}
-	public  wpoint(Date d, String i, double la, double lo, double al, String ss, String m, int fre, int s )
-	{
-		tim=d;
-		id=i;
-		lat=la;
-		lon=lo;
-		alt=al;
-		ssid=ss;
-		mac=m;
-		frequncy=fre;
-		signal=s;
-	}
-	public wpoint(wpoint p1,wpoint p2)
-	{
-		double m1=p1.memutza();
-		double m2=p2.memutza();
-		tim =p1.tim;
-		id=p1.id;
-		lat=((p1.lat*m1)+(p2.lat*m2)/(m1+m2));
-		lon=((p1.lon*m1)+(p2.lon*m2)/(m1+m2));
-		alt=((p1.alt*m1)+(p2.alt*m2)/(m1+m2));
-		ssid=p1.ssid;
-		mac=p1.mac;
-		frequncy=p1.frequncy;
-		signal=-1;
-	}
-	public wpoint(wpoint p[])
-	{
-		tim =p[0].tim;
-		id=p[0].id;
-		ssid=p[0].ssid;
-		mac=p[0].mac;
-		frequncy=p[0].frequncy;
-		signal=-1;
-		double la=0;
-		double lo=0;
-		double al=0;
-		double m=0;
-		for(int i=0;i<p.length;i++)
-		{
-			if(mac.equals(p[i].mac))
-			{
-				double m1=p[i].memutza();
-				la+=p[i].lat*m1;
-				lo+=p[i].lon*m1;
-				al+=p[i].alt*m1;
-				m+=m1;
+/**
+ * This class is the basic, the wpoint is data container for wifi-points
+ *
+ * @author yitzchak shneller
+ * @version 1
+ */
+public class wpoint {
+
+    private Date tim;
+    private String id;
+    private double lat;
+    private double lon;
+    private double alt;
+    private int wifiNetworks = 0;
+    private String ssid[] = new String[10];
+    private String mac[] = new String[10];
+    private int frequncy[] = new int[10];
+    private int signal[] = new int[10];
+    private boolean notEmpty = false;
+
+    public wpoint() {
+    }
+
+    /**
+     * builder function
+     *
+     * @param info contain all information for wpoint
+     * @throws java.text.ParseException if the information is wrong
+     */
+    public wpoint(String[] info) throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        tim = dateFormat.parse(info[0]);
+        id = info[1];
+        lat = Double.parseDouble(info[2]);
+        lon = Double.parseDouble(info[3]);
+        alt = Double.parseDouble(info[4]);
+        wifiNetworks = (info.length - 6) / 4;
+        for (int i = 0; i < wifiNetworks; i++) {
+            ssid[i] = info[i * 4 + 6];
+            mac[i] = info[i * 4 + 7];
+            frequncy[i] = Integer.parseInt(info[i * 4 + 8]);
+            signal[i] = Integer.parseInt(info[i * 4 + 9]);
+        }
+        notEmpty = true;
+    }
+
+    /**
+     * @return time from tim
+     */
+    protected Date getTim() {
+        return tim;
+    }
+
+    /**
+     * @return id from id
+     */
+    protected String getId() {
+        return id;
+    }
+
+    /**
+     * @param id to set in id
+     */
+    protected void setId(String id) {
+        this.id = id;
+    }
+
+    /**
+     * @return lat from lat
+     */
+    protected double getLat() {
+        return lat;
+    }
+
+    /**
+     * @param lat to set in lat
+     */
+    protected void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    /**
+     * @return lon from lon
+     */
+    protected double getLon() {
+        return lon;
+    }
+
+    /**
+     * @param lon to set in lon
+     */
+    protected void setLon(double lon) {
+        this.lon = lon;
+    }
+
+    /**
+     * @return alt from alt
+     */
+    protected double getAlt() {
+        return alt;
+    }
+
+    /**
+     * @param alt to set in alt
+     */
+    protected void setAlt(double alt) {
+        this.alt = alt;
+    }
+
+    /**
+     * @return wiFinetworks from wiFinetworks
+     */
+    protected int getWifiNetworks() {
+        return wifiNetworks;
+    }
+
+    /**
+     * @return ssid from ssid
+     */
+    protected String[] getSsid() {
+        return ssid;
+    }
+
+    /**
+     * @return mac from mac
+     */
+    protected String[] getMac() {
+        return mac;
+    }
+
+    /**
+     * @return frequncy from frequncy
+     */
+    protected int[] getFrequncy() {
+        return frequncy;
+    }
+
+    /**
+     * @return signal from signal
+     */
+    protected int[] getSignal() {
+        return signal;
+    }
 
 
-			}
-		}
-		lat=la/m;
-		lon=lo/m;
-		alt=al/m;
-	}
-	public wpoint(wpoint p1,wpoint p2,wpoint p3)
-	{
-		double m1=p1.memutza();
-		double m2=p2.memutza();
-		double m3=p3.memutza();
-		tim =p1.tim;
-		id=p1.id;
-		lat=((p1.lat*m1)+(p2.lat*m2)+(p3.lat*m3))/(m1+m2+m3);
-		lon=((p1.lon*m1)+(p2.lon*m2)+(p3.lon*m3))/(m1+m2+m3);
-		alt=((p1.alt*m1)+(p2.alt*m2)+(p3.alt*m3))/(m1+m2+m3);
-		ssid=p1.ssid;
-		mac=p1.mac;
-		frequncy=p1.frequncy;
-		signal=-1;
-	}
-	public wpoint(wpoint p1,wpoint p2,wpoint p3,wpoint p4)
-	{
-		double m1=p1.memutza();
-		double m2=p2.memutza();
-		double m3=p3.memutza();
-		double m4=p4.memutza();
-		tim =p1.tim;
-		id=p1.id;
-		lat=((p1.lat*m1)+(p2.lat*m2)+(p3.lat*m3)+(p4.lat*m4))/(m1+m2+m3+m4);
-		lon=((p1.lon*m1)+(p2.lon*m2)+(p3.lon*m3)+(p4.lon*m4))/(m1+m2+m3+m4);
-		alt=((p1.alt*m1)+(p2.alt*m2)+(p3.alt*m3)+(p4.alt*m4))/(m1+m2+m3+m4);
-		ssid=p1.ssid;
-		mac=p1.mac;
-		frequncy=p1.frequncy;
-		signal=-1;
-	}
-	public wpoint(wpoint p1,wpoint p2,wpoint p3,wpoint p4,wpoint p5)
-	{
-		double m1=p1.memutza();
-		double m2=p2.memutza();
-		double m3=p3.memutza();
-		double m4=p4.memutza();
-		double m5=p5.memutza();
-		tim =p1.tim;
-		id=p1.id;
-		lat=((p1.lat*m1)+(p2.lat*m2)+(p3.lat*m3)+(p4.lat*m4)+(p5.lat*m5))/(m1+m2+m3+m4+m5);
-		lon=((p1.lon*m1)+(p2.lon*m2)+(p3.lon*m3)+(p4.lon*m4)+(p5.lon*m5))/(m1+m2+m3+m4+m5);
-		alt=((p1.alt*m1)+(p2.alt*m2)+(p3.alt*m3)+(p4.alt*m4)+(p5.alt*m5))/(m1+m2+m3+m4+m5);
-		ssid=p1.ssid;
-		mac=p1.mac;
-		frequncy=p1.frequncy;
-		signal=-1;
-	}
-	public wpoint(wpoint p1,wpoint p2,wpoint p3,wpoint p4,wpoint p5,wpoint p6)
-	{
-		double m1=p1.memutza();
-		double m2=p2.memutza();
-		double m3=p3.memutza();
-		double m4=p4.memutza();
-		double m5=p5.memutza();
-		double m6=p6.memutza();
-		tim =p1.tim;
-		id=p1.id;
-		lat=((p1.lat*m1)+(p2.lat*m2)+(p3.lat*m3)+(p4.lat*m4)+(p5.lat*m5)+(p6.lat*m6))/(m1+m2+m3+m4+m5+m6);
-		lon=((p1.lon*m1)+(p2.lon*m2)+(p3.lon*m3)+(p4.lon*m4)+(p5.lon*m5)+(p6.lon*m6))/(m1+m2+m3+m4+m5+m6);
-		alt=((p1.alt*m1)+(p2.alt*m2)+(p3.alt*m3)+(p4.alt*m4)+(p5.alt*m5)+(p6.alt*m6))/(m1+m2+m3+m4+m5+m6);
-		ssid=p1.ssid;
-		mac=p1.mac;
-		frequncy=p1.frequncy;
-		signal=-1;
-	}
-	public wpoint(wpoint p1,wpoint p2,wpoint p3,wpoint p4,wpoint p5,wpoint p6,wpoint p7)
-	{
-		double m1=p1.memutza();
-		double m2=p2.memutza();
-		double m3=p3.memutza();
-		double m4=p4.memutza();
-		double m5=p5.memutza();
-		double m6=p6.memutza();
-		double m7=p7.memutza();
-		tim =p1.tim;
-		id=p1.id;
-		lat=((p1.lat*m1)+(p2.lat*m2)+(p3.lat*m3)+(p4.lat*m4)+(p5.lat*m5)+(p6.lat*m6)+(p7.lat*m7))/(m1+m2+m3+m4+m5+m6+m7);
-		lon=((p1.lon*m1)+(p2.lon*m2)+(p3.lon*m3)+(p4.lon*m4)+(p5.lon*m5)+(p6.lon*m6)+(p7.lon*m7))/(m1+m2+m3+m4+m5+m6+m7);
-		alt=((p1.alt*m1)+(p2.alt*m2)+(p3.alt*m3)+(p4.alt*m4)+(p5.alt*m5)+(p6.alt*m6)+(p7.alt*m7))/(m1+m2+m3+m4+m5+m6+m7);
-		ssid=p1.ssid;
-		mac=p1.mac;
-		frequncy=p1.frequncy;
-		signal=-1;
-	}
-	public wpoint(wpoint p1,wpoint p2,wpoint p3,wpoint p4,wpoint p5,wpoint p6,wpoint p7,wpoint p8)
-	{
-		double m1=p1.memutza();
-		double m2=p2.memutza();
-		double m3=p3.memutza();
-		double m4=p4.memutza();
-		double m5=p5.memutza();
-		double m6=p6.memutza();
-		double m7=p7.memutza();
-		double m8=p8.memutza();
-		tim =p1.tim;
-		id=p1.id;
-		lat=((p1.lat*m1)+(p2.lat*m2)+(p3.lat*m3)+(p4.lat*m4)+(p5.lat*m5)+(p6.lat*m6)+(p7.lat*m7)+(p8.lat*m8))/(m1+m2+m3+m4+m5+m6+m7+m8);
-		lon=((p1.lon*m1)+(p2.lon*m2)+(p3.lon*m3)+(p4.lon*m4)+(p5.lon*m5)+(p6.lon*m6)+(p7.lon*m7)+(p8.lon*m8))/(m1+m2+m3+m4+m5+m6+m7+m8);
-		alt=((p1.alt*m1)+(p2.alt*m2)+(p3.alt*m3)+(p4.alt*m4)+(p5.alt*m5)+(p6.alt*m6)+(p7.alt*m7)+(p8.alt*m8))/(m1+m2+m3+m4+m5+m6+m7+m8);
-		ssid=p1.ssid;
-		mac=p1.mac;
-		frequncy=p1.frequncy;
-		signal=-1;
-	}
-	public wpoint(wpoint p1,wpoint p2,wpoint p3,wpoint p4,wpoint p5,wpoint p6,wpoint p7,wpoint p8,wpoint p9)
-	{
-		double m1=p1.memutza();
-		double m2=p2.memutza();
-		double m3=p3.memutza();
-		double m4=p4.memutza();
-		double m5=p5.memutza();
-		double m6=p6.memutza();
-		double m7=p7.memutza();
-		double m8=p8.memutza();
-		double m9=p9.memutza();
-		tim =p1.tim;
-		id=p1.id;
-		lat=((p1.lat*m1)+(p2.lat*m2)+(p3.lat*m3)+(p4.lat*m4)+(p5.lat*m5)+(p6.lat*m6)+(p7.lat*m7)+(p8.lat*m8)+(p9.lat*m9))/(m1+m2+m3+m4+m5+m6+m7+m8+m9);
-		lon=((p1.lon*m1)+(p2.lon*m2)+(p3.lon*m3)+(p4.lon*m4)+(p5.lon*m5)+(p6.lon*m6)+(p7.lon*m7)+(p8.lon*m8)+(p9.lon*m9))/(m1+m2+m3+m4+m5+m6+m7+m8+m9);
-		alt=((p1.alt*m1)+(p2.alt*m2)+(p3.alt*m3)+(p4.alt*m4)+(p5.alt*m5)+(p6.alt*m6)+(p7.alt*m7)+(p8.alt*m8)+(p9.alt*m9))/(m1+m2+m3+m4+m5+m6+m7+m8+m9);
-		ssid=p1.ssid;
-		mac=p1.mac;
-		frequncy=p1.frequncy;
-		signal=-1;
-	}
-	public wpoint(wpoint p1,wpoint p2,wpoint p3,wpoint p4,wpoint p5,wpoint p6,wpoint p7,wpoint p8,wpoint p9,wpoint p10)
-	{
-		double m1=p1.memutza();
-		double m2=p2.memutza();
-		double m3=p3.memutza();
-		double m4=p4.memutza();
-		double m5=p5.memutza();
-		double m6=p6.memutza();
-		double m7=p7.memutza();
-		double m8=p8.memutza();
-		double m9=p9.memutza();
-		double m10=p10.memutza();
-		tim =p1.tim;
-		id=p1.id;
-		lat=((p1.lat*m1)+(p2.lat*m2)+(p3.lat*m3)+(p4.lat*m4)+(p5.lat*m5)+(p6.lat*m6)+(p7.lat*m7)+(p8.lat*m8)+(p9.lat*m9)+(p10.lat*m10))/(m1+m2+m3+m4+m5+m6+m7+m8+m9+m10);
-		lon=((p1.lon*m1)+(p2.lon*m2)+(p3.lon*m3)+(p4.lon*m4)+(p5.lon*m5)+(p6.lon*m6)+(p7.lon*m7)+(p8.lon*m8)+(p9.lon*m9)+(p10.lon*m10))/(m1+m2+m3+m4+m5+m6+m7+m8+m9+m10);
-		alt=((p1.alt*m1)+(p2.alt*m2)+(p3.alt*m3)+(p4.alt*m4)+(p5.alt*m5)+(p6.alt*m6)+(p7.alt*m7)+(p8.alt*m8)+(p9.alt*m9)+(p10.alt*m10))/(m1+m2+m3+m4+m5+m6+m7+m8+m9+m10);
-		ssid=p1.ssid;
-		mac=p1.mac;
-		frequncy=p1.frequncy;
-		signal=-1;
-	}
-	public double memutza ()
-	{
-		return 1/(signal*signal);
-	}
+    /**
+     * @param ssid     to set in ssid
+     * @param mac      to set in mac
+     * @param frequncy to set in frequncy
+     * @param signal   to set in signal.
+     *                 if there is already 10, it left the strongest signal
+     */
+    protected void addWifi(String[] ssid, String mac[], int frequncy[], int signal[]) {
+        int amount = 0;
+        while (amount < 10&&amount<ssid.length) {
+            if (ssid[amount] != null)
+                amount++;
+            else break;
+        }
+        boolean flag = (10 - wifiNetworks - amount >= 0);
+        int left = flag ? (amount) : (10 - wifiNetworks);//how many rows still can enter
+        if (left > 0) {
+            //copy the new
+            System.arraycopy(ssid, 0, this.ssid, wifiNetworks, left);
+            System.arraycopy(mac, 0, this.mac, wifiNetworks, left);
+            System.arraycopy(frequncy, 0, this.frequncy, wifiNetworks, left);
+            System.arraycopy(signal, 0, this.signal, wifiNetworks, left);
+        }
+        if (!flag) {//need to replace. ceck the weakest signal.
+            int weakest[] = new int[10], place[] = new int[10];
+            for (int i = 0; i < weakest.length; i++) {
+                weakest[i] = -120;
+            }
+            for (int i = 0; i < 10; i++) {
+                int j = 0;
+                while (this.signal[i] <= weakest[j]) {
+                    j++;
+                }
+                for (int k = 9; k > j; k--) {
+                    weakest[k] = weakest[k - 1];
+                    place[k] = place[k - 1];
+                }
+                weakest[j] = this.signal[i];
+                place[j] = i;
+            }
+            for (int i = left; i < amount; i++) {
+                for (int j = 9; j >= 0; j--) {
+                    if (j == 0 && signal[i] > weakest[j]) {
+                        weakest[0] = signal[i];
+                        this.ssid[0] = ssid[i];
+                        this.mac[0] = mac[i];
+                        this.frequncy[0] = frequncy[i];
+                        this.signal[0] = signal[i];
+                        break;
+                    }
+                    if (signal[i] > weakest[j]) {
+                        weakest[j] = weakest[j - 1];
+                    } else {
+                        if (j != 9) {
+                            weakest[j + 1] = signal[i];
+                            this.ssid[j + 1] = ssid[i];
+                            this.mac[j + 1] = mac[i];
+                            this.frequncy[j + 1] = frequncy[i];
+                            this.signal[j + 1] = signal[i];
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * return if the scan is the same scan
+     *
+     * @param wp the wp to comper with
+     * @return is the scan is the same scan
+     */
+    protected boolean equals(wpoint wp) {
+        return (tim.equals(wp.tim) && id.equals(wp.id) && lat == wp.lat && lon == wp.lon && alt == wp.alt);
+    }
+
+    /**
+     * @return all the information of the point
+     */
+    public String toString() {
+        StringBuilder msg = new StringBuilder(tim + "," + id + "," + lat + "," + lon + "," + alt + "," + wifiNetworks);
+        for (int i = 0; i < wifiNetworks; i++) {
+            msg.append(",").append(ssid[i]).append(",").append(mac[i]).append(",").append(frequncy[i]).append(",").append(signal[i]);
+        }
+        return msg.toString();
+    }
 }
